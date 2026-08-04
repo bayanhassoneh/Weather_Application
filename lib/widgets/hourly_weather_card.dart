@@ -15,19 +15,24 @@ class HourlyWeatherCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 60,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.only(right: 8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(time, style: const TextStyle(color: Colors.white)),
+          Text(time, style: const TextStyle(color: Colors.white, fontSize: 15)),
           const SizedBox(height: 5),
-          Text(icon, style: const TextStyle(fontSize: 28)),
+          Image.network(
+            'https://openweathermap.org/img/wn/$icon@2x.png',
+            width: 35,
+            height: 35,
+          ),
+          // Text(icon, style: const TextStyle(fontSize: 15)),
           const SizedBox(height: 5),
           Text(
             "$temperature°",
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),

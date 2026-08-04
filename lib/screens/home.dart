@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/models/weatherModel.dart';
 import 'package:weather_app/widgets/hourly_weather_card.dart';
+import 'package:weather_app/widgets/day_forecast_card.dart';
+import 'package:weather_app/widgets/featurs_card.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -10,9 +12,29 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController _searchController = TextEditingController();
+  final features = [
+    {'icon': Icons.water_drop, 'title': 'Humidity', 'value': '75%'},
+    {'icon': Icons.air, 'title': 'Wind', 'value': '15 km/h'},
+    {'icon': Icons.speed, 'title': 'Pressure', 'value': '1012 hPa'},
+    {'icon': Icons.visibility, 'title': 'Visibility', 'value': '8 km'},
+  ];
+  final dailyForecast = [
+    {"day": "today", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
+    {"day": "Mon", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
+    {"day": "Tue", "icon": "10d", "minTemp": "17°", "maxTemp": "25°"},
+    {"day": "Wed", "icon": "03d", "minTemp": "20°", "maxTemp": "29°"},
+    {"day": "thrs", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
+    {"day": "fri", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
+    {"day": "sat", "icon": "10d", "minTemp": "17°", "maxTemp": "25°"},
+    {"day": "sun", "icon": "03d", "minTemp": "20°", "maxTemp": "29°"},
+    {"day": "mon", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
+    {"day": "tue", "icon": "03d", "minTemp": "20°", "maxTemp": "29°"},
+  ];
+
   final Weathermodel weather = Weathermodel(
     cityName: 'amman',
-    temperature: 25.0,
+    temperature: 25,
     condition: 'Sunny',
   );
   @override
@@ -24,73 +46,220 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/sunny.png'),
+                // 'assets/images/sunny.png'
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          Container(color: Colors.black.withValues(alpha: 0.25)),
+          Positioned.fill(
+            child: Container(
+              color: const Color.fromARGB(
+                255,
+                52,
+                52,
+                84,
+              ).withValues(alpha: 0.4),
+            ),
+          ),
 
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(30.0),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(weather.cityName, style: TextStyle(fontSize: 28)),
+                    TextFormField(
+                      controller: _searchController,
+                      textInputAction: TextInputAction.search,
+                      onFieldSubmitted: (value) {
+                        print(value);
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Search city...",
+                        hintStyle: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.7),
+                        ),
+
+                        prefixIcon: Icon(Icons.search, color: Colors.white70),
+                        filled: true,
+                        fillColor: Colors.white.withValues(alpha: 0.15),
+                        // labelText: 'search',
+                        // labelStyle: TextStyle(
+                        //   color: const Color.fromARGB(255, 196, 218, 229),
+                        // ),
+                        border: OutlineInputBorder(),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+
+                          borderSide: BorderSide(
+                            color: const Color.fromARGB(255, 196, 218, 229),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: const Color.fromARGB(255, 114, 189, 210),
+                          ),
+                        ),
+                      ),
+                    ),
                     Text(
-                      '${weather.temperature}°',
+                      weather.cityName,
+                      style: TextStyle(fontSize: 28, color: Colors.white),
+                    ),
+                    Text(
+                      '${weather.temperature.round()}°',
                       style: TextStyle(fontSize: 35),
                     ),
                     Text(weather.condition, style: TextStyle(fontSize: 20)),
                     SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          color: const Color.fromARGB(255, 133, 168, 186),
-                        ),
-                        Text(
-                          'HOURLY FORECAST',
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 133, 168, 186),
-                          ),
-                        ),
-                      ],
-                    ),
+
                     Container(
-                      height: 130,
+                      height: 170,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.blueAccent.withValues(alpha: 0.25),
+                        color: const Color.fromARGB(
+                          255,
+                          55,
+                          114,
+                          216,
+                        ).withValues(alpha: 0.4),
                       ),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          return HourlyWeatherCard(
-                            time: "12 PM",
-                            icon: "☀️",
-                            temperature: 30,
-                          );
-                        },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  color: const Color.fromARGB(
+                                    255,
+                                    196,
+                                    218,
+                                    229,
+                                  ),
+                                ),
+                                Text(
+                                  'HOURLY FORECAST',
+                                  style: TextStyle(
+                                    color: const Color.fromARGB(
+                                      255,
+                                      196,
+                                      218,
+                                      229,
+                                    ),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 5),
+                            Expanded(
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 10,
+                                itemBuilder: (context, index) {
+                                  return HourlyWeatherCard(
+                                    time: "12 PM",
+                                    icon: "01d",
+                                    temperature: 30,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_month_outlined,
-                          color: const Color.fromARGB(255, 133, 168, 186),
+                    SizedBox(height: 10),
+                    Container(
+                      height: 600,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color.fromARGB(
+                          255,
+                          55,
+                          114,
+                          216,
+                        ).withValues(alpha: 0.4),
+                      ),
+                      child: Padding(
+                        // padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_month_outlined,
+                                  color: const Color.fromARGB(
+                                    255,
+                                    196,
+                                    218,
+                                    229,
+                                  ),
+                                ),
+                                Text(
+                                  '10 DAYS FORECAST',
+                                  style: TextStyle(
+                                    color: const Color.fromARGB(
+                                      255,
+                                      196,
+                                      218,
+                                      229,
+                                    ),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 5),
+                            Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemCount: dailyForecast.length,
+                                itemBuilder: (context, index) {
+                                  final day = dailyForecast[index];
+                                  return DayForecastCard(
+                                    day: day['day'] as String,
+                                    icon: day['icon'] as String,
+                                    minTemp: day['minTemp'] as String,
+                                    maxTemp: day['maxTemp'] as String,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          '10 DAYS FORECAST',
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 133, 168, 186),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 1.2,
                           ),
-                        ),
-                      ],
+                      itemCount: features.length,
+                      itemBuilder: (context, index) {
+                        final feature = features[index];
+                        return FeatursCard(
+                          icon: feature["icon"] as IconData,
+                          title: feature["title"] as String,
+                          content: feature['value'] as String,
+                        );
+                      },
                     ),
                   ],
                 ),

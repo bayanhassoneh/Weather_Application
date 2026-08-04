@@ -11,7 +11,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, '/home');
     });
   }
@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
               return const LinearGradient(
                 colors: <Color>[
                   Colors.white,
-                  Color.fromARGB(255, 244, 249, 151),
+                  Color.fromARGB(255, 223, 240, 155),
                 ],
               ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height));
             },
