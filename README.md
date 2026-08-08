@@ -1,9 +1,12 @@
+تمام 😭 هذا **كامل الـ README بصيغة Markdown**، بنفس المحتوى، فقط زبطت الـ syntax والـ indentation:
+
 ````md
 # Weather App 🌤️
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/)
 [![OpenWeather API](https://img.shields.io/badge/OpenWeather_API-E96E50?style=for-the-badge&logo=openweather&logoColor=white)](https://openweathermap.org/)
+
 A clean, modern Flutter weather application built to demonstrate real-world REST API integration, asynchronous data fetching, state management, and device location services.
 
 ## 📱 Features
@@ -14,10 +17,11 @@ A clean, modern Flutter weather application built to demonstrate real-world REST
 - 🎨 **Dynamic UI:** Weather icons mapped directly from OpenWeather API responses.
 
 ## 📸 Screenshots
+
 <p align="left">
   <img src="screenshots/splashScreen.png" width="30%" alt="Splash Screen"/>
   &nbsp;&nbsp;
-   <img src="screenshots/home.png" width="30%" alt="home Screen"/>
+  <img src="screenshots/home.png" width="30%" alt="Home Screen"/>
 </p>
 
 ## 🧠 Key Concepts Applied
@@ -34,7 +38,7 @@ This project serves as a hands-on implementation of the following core software 
 
 ---
 
-## 🏗️ Architecture & Folder Structure
+## 🏗️ Architecture
 
 The app follows a unidirectional data flow pattern to keep components loosely coupled:
 
@@ -59,13 +63,14 @@ UI (Screens/Widgets) ──► Provider ──► Service ──► OpenWeather 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 Make sure you have Flutter installed and an active API Key from [OpenWeatherMap](https://home.openweathermap.org/users/sign_up).
 
 ### Installation
 
 1. **Clone the repository:**
    ```bash
-git clone https://github.com/bayanhassoneh/weather-app.git
+   git clone https://github.com/bayanhassoneh/weather-app.git
    cd weather-app
    ```
 
@@ -75,7 +80,9 @@ git clone https://github.com/bayanhassoneh/weather-app.git
    ```
 
 3. **Configure API Key:**
-  Create your API configuration file and add your OpenWeather API key:
+
+   Create your API configuration file and add your OpenWeather API key:
+
    ```dart
    static const String apiKey = 'YOUR_OPENWEATHER_API_KEY';
    ```
@@ -84,7 +91,4 @@ git clone https://github.com/bayanhassoneh/weather-app.git
    ```bash
    flutter run
    ```
-
----
-
-
+````
