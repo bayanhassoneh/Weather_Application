@@ -1,5 +1,3 @@
-تمام 😭 هذا **كامل الـ README بصيغة Markdown**، بنفس المحتوى، فقط زبطت الـ syntax والـ indentation:
-
 ````md
 # Weather App 🌤️
 
