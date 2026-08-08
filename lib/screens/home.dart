@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/models/weatherModel.dart';
+import 'package:weather_app/models/CurrentWeatherModel.dart';
+import 'package:weather_app/providers/WeatherProvider.dart';
 import 'package:weather_app/widgets/hourly_weather_card.dart';
 import 'package:weather_app/widgets/day_forecast_card.dart';
 import 'package:weather_app/widgets/featurs_card.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -13,12 +15,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
-  final features = [
-    {'icon': Icons.water_drop, 'title': 'Humidity', 'value': '75%'},
-    {'icon': Icons.air, 'title': 'Wind', 'value': '15 km/h'},
-    {'icon': Icons.speed, 'title': 'Pressure', 'value': '1012 hPa'},
-    {'icon': Icons.visibility, 'title': 'Visibility', 'value': '8 km'},
-  ];
   final dailyForecast = [
     {"day": "today", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
     {"day": "Mon", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
@@ -31,14 +27,41 @@ class _MyHomePageState extends State<MyHomePage> {
     {"day": "mon", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
     {"day": "tue", "icon": "03d", "minTemp": "20°", "maxTemp": "29°"},
   ];
+  @override
+  void initState() {
+    super.initState();
 
-  final Weathermodel weather = Weathermodel(
-    cityName: 'amman',
-    temperature: 25,
-    condition: 'Sunny',
-  );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<weatherProvider>().fetchWeatherByCity('Amman');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<weatherProvider>();
+    final features = [
+      {
+        'icon': Icons.water_drop,
+        'title': 'Humidity',
+        'value': '${provider.weather?.humidity}%',
+      },
+      {
+        'icon': Icons.air,
+        'title': 'Wind',
+        'value': '${provider.weather?.windSpeed} km/h',
+      },
+      {
+        'icon': Icons.speed,
+        'title': 'Pressure',
+        'value': '${provider.weather?.pressure} hPa',
+      },
+      {
+        'icon': Icons.visibility,
+        'title': 'Visibility',
+        'value': '${(provider.weather?.visibility ?? 0) / 1000} km',
+      },
+    ];
+
     return Scaffold(
       body: Stack(
         children: [
@@ -84,10 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         prefixIcon: Icon(Icons.search, color: Colors.white70),
                         filled: true,
                         fillColor: Colors.white.withValues(alpha: 0.15),
-                        // labelText: 'search',
-                        // labelStyle: TextStyle(
-                        //   color: const Color.fromARGB(255, 196, 218, 229),
-                        // ),
+
                         border: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4),
@@ -104,14 +124,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Text(
-                      weather.cityName,
+                      provider.weather?.cityName ?? '',
                       style: TextStyle(fontSize: 28, color: Colors.white),
                     ),
                     Text(
-                      '${weather.temperature.round()}°',
+                      '${provider.weather?.temperature.round()}°',
                       style: TextStyle(fontSize: 35),
                     ),
-                    Text(weather.condition, style: TextStyle(fontSize: 20)),
+                    Text(
+                      provider.weather?.condition ?? '',
+                      style: TextStyle(fontSize: 20),
+                    ),
                     SizedBox(height: 10),
 
                     Container(

@@ -2,8 +2,8 @@ class Weathermodel {
   final String cityName;
   final double temperature;
   final String condition;
-
   final String icon;
+
   final int humidity;
   final int pressure;
   final double windSpeed;
@@ -13,10 +13,10 @@ class Weathermodel {
     required this.temperature,
     required this.condition,
     required this.icon,
-    required this.humidity,
-    required this.pressure,
-    required this.windSpeed,
-    required this.visibility,
+    required this.humidity, //1
+    required this.pressure, //2
+    required this.windSpeed, //3
+    required this.visibility, //4
   });
 
   factory Weathermodel.fromJson(Map<String, dynamic> json) {
