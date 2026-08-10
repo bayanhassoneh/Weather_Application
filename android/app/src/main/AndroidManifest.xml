@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<uses-permession android:name="android.permession.ACCESS_FINE_LOCATION"/>
+<uses-permession android:name= "android.permession.ACCESS_COARSE_LOCATION"/>
     <application
         android:label="weather_app"
         android:name="${applicationName}"
