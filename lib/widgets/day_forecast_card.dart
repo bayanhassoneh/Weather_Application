@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class DayForecastCard extends StatelessWidget {
   final String day;
   final String icon;
-  final String minTemp;
-  final String maxTemp;
+  final double minTemp;
+  final double maxTemp;
   const DayForecastCard({
     super.key,
     required this.day,
@@ -42,7 +42,7 @@ class DayForecastCard extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    '$minTemp / $maxTemp',
+                    '${minTemp.round()}° / ${maxTemp.round()}°',
                     style: TextStyle(fontSize: 15),
                   ),
                 ),

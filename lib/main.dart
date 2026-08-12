@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
+import 'package:weather_app/providers/WeatherProvider.dart';
+ import 'package:provider/provider.dart';
 import 'package:weather_app/screens/home.dart';
 import 'package:weather_app/widgets/InternetCheckerWrapper.dart';
 import 'core/theme/app_theme.dart';
@@ -7,10 +8,12 @@ import 'package:weather_app/screens/splash_screen.dart';
 
 void main() {
   runApp(
-    // MultiProvider(providers: [],
-    //  child:
+    MultiProvider(providers: [
+ChangeNotifierProvider(create: (_)=>  weatherProvider()),
+    ],
+     child:
     MyApp(),
-    //  )
+     )
   );
 }
 

@@ -22,7 +22,7 @@ A clean, modern Flutter weather application built to demonstrate real-world REST
   <img src="screenshots/home.png" width="30%" alt="Home Screen"/>
 </p>
 
-## 🧠 Key Concepts Applied
+##  Key Concepts Applied
 
 This project serves as a hands-on implementation of the following core software engineering and Flutter concepts:
 
@@ -48,7 +48,7 @@ UI (Screens/Widgets) ──► Provider ──► Service ──► OpenWeather 
 
 ---
 
-## 🛠️ Tech Stack & Packages
+##  Tech Stack & Packages
 
 - **Framework:** Flutter (Dart)
 - **State Management:** `provider`
@@ -58,7 +58,7 @@ UI (Screens/Widgets) ──► Provider ──► Service ──► OpenWeather 
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 

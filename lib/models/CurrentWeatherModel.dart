@@ -1,4 +1,4 @@
-class Weathermodel {
+class CurrentWeathermodel {
   final String cityName;
   final double temperature;
   final String condition;
@@ -8,7 +8,7 @@ class Weathermodel {
   final int pressure;
   final double windSpeed;
   final double visibility;
-  Weathermodel({
+  CurrentWeathermodel({
     required this.cityName,
     required this.temperature,
     required this.condition,
@@ -19,8 +19,8 @@ class Weathermodel {
     required this.visibility, //4
   });
 
-  factory Weathermodel.fromJson(Map<String, dynamic> json) {
-    return Weathermodel(
+  factory CurrentWeathermodel.fromJson(Map<String, dynamic> json) {
+    return CurrentWeathermodel(
       cityName: json['name'],
       temperature: json['main']['temp'].toDouble(),
       condition: json['waether'][0]['main'],

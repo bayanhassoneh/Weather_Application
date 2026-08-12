@@ -15,24 +15,43 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
-  final dailyForecast = [
-    {"day": "today", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
-    {"day": "Mon", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
-    {"day": "Tue", "icon": "10d", "minTemp": "17°", "maxTemp": "25°"},
-    {"day": "Wed", "icon": "03d", "minTemp": "20°", "maxTemp": "29°"},
-    {"day": "thrs", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
-    {"day": "fri", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
-    {"day": "sat", "icon": "10d", "minTemp": "17°", "maxTemp": "25°"},
-    {"day": "sun", "icon": "03d", "minTemp": "20°", "maxTemp": "29°"},
-    {"day": "mon", "icon": "01d", "minTemp": "18°", "maxTemp": "27°"},
-    {"day": "tue", "icon": "03d", "minTemp": "20°", "maxTemp": "29°"},
-  ];
+
+  String formatHour(DateTime time) {
+    final hour = time.hour;
+    final period = hour >= 12 ? 'PM' : 'AM';
+    final hour12 = hour % 12 == 0 ? 12 : hour % 12;
+
+    return '$hour12 $period';
+  }
+
+  String getDayName(DateTime date) {
+    final now = DateTime.now();
+
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
+      return 'Today';
+    }
+
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+
+    return days[date.weekday - 1];
+  }
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<weatherProvider>().fetchWeatherByCity('Amman');
+      context.read<weatherProvider>().getWeatherByLocation();
     });
   }
 
@@ -95,8 +114,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextFormField(
                       controller: _searchController,
                       textInputAction: TextInputAction.search,
-                      onFieldSubmitted: (value) {
-                        print(value);
+                      onFieldSubmitted: (value) async {
+                        if (value.trim().isNotEmpty) {
+                          if (value.trim().isEmpty) return;
+                          try {
+                            await context
+                                .read<weatherProvider>()
+                                .gethWeatherByCity(value.trim());
+                          } on Exception catch (e) {
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
+                        }
                       },
                       decoration: InputDecoration(
                         hintText: "Search city...",
@@ -183,12 +215,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             Expanded(
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 10,
+                                itemCount: provider.hourlyWeather.length,
                                 itemBuilder: (context, index) {
+                                  final hourly = provider.hourlyWeather[index];
                                   return HourlyWeatherCard(
-                                    time: "12 PM",
-                                    icon: "01d",
-                                    temperature: 30,
+                                    time: formatHour(hourly.time),
+                                    icon: hourly.icon,
+                                    temperature: hourly.temperature.round(),
                                   );
                                 },
                               ),
@@ -227,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                 ),
                                 Text(
-                                  '10 DAYS FORECAST',
+                                  '5 DAYS FORECAST',
                                   style: TextStyle(
                                     color: const Color.fromARGB(
                                       255,
@@ -247,14 +280,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 scrollDirection: Axis.vertical,
-                                itemCount: dailyForecast.length,
+                                itemCount: provider.dailyWeather.length,
                                 itemBuilder: (context, index) {
-                                  final day = dailyForecast[index];
+                                  final day = provider.dailyWeather[index];
                                   return DayForecastCard(
-                                    day: day['day'] as String,
-                                    icon: day['icon'] as String,
-                                    minTemp: day['minTemp'] as String,
-                                    maxTemp: day['maxTemp'] as String,
+                                    day: getDayName(day.date),
+                                    icon: day.icon,
+                                    minTemp: day.minTemp,
+                                    maxTemp: day.maxTemp,
                                   );
                                 },
                               ),
