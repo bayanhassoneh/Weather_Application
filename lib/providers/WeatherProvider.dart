@@ -1,6 +1,4 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/models/DailyWeatherModel.dart';
 import 'package:weather_app/models/HourlyWeatherModel.dart';
 import 'package:weather_app/services/weather_service.dart';

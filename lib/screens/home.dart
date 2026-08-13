@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/models/CurrentWeatherModel.dart';
 import 'package:weather_app/providers/WeatherProvider.dart';
 import 'package:weather_app/widgets/hourly_weather_card.dart';
 import 'package:weather_app/widgets/day_forecast_card.dart';
@@ -46,6 +45,28 @@ class _MyHomePageState extends State<MyHomePage> {
     return days[date.weekday - 1];
   }
 
+  ImageProvider getWeatherBackground(String condition) {
+    switch (condition.toLowerCase()) {
+      case 'clear':
+        return const AssetImage('assets/images/sunny.jpg');
+
+      case 'clouds':
+        return const AssetImage('assets/images/cloudy.png');
+
+      case 'rain':
+        return const AssetImage('assets/images/rainy.png');
+
+      case 'snow':
+        return const AssetImage('assets/images/snowy.png');
+
+      case 'thunderstorm':
+        return const AssetImage('assets/images/storm.png');
+
+      default:
+        return const AssetImage('assets/images/sunny.png');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -87,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/sunny.png'),
+                image: getWeatherBackground(provider.weather?.condition ?? ''),
                 // 'assets/images/sunny.png'
                 fit: BoxFit.cover,
               ),
@@ -115,19 +136,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: _searchController,
                       textInputAction: TextInputAction.search,
                       onFieldSubmitted: (value) async {
-                        if (value.trim().isNotEmpty) {
-                          if (value.trim().isEmpty) return;
-                          try {
-                            await context
-                                .read<weatherProvider>()
-                                .gethWeatherByCity(value.trim());
-                          } on Exception catch (e) {
-                            if (!mounted) return;
+                        if (value.trim().isEmpty) return;
+                        try {
+                          await context
+                              .read<weatherProvider>()
+                              .gethWeatherByCity(value.trim());
+                        } on Exception catch (e) {
+                          if (!mounted) return;
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(e.toString())),
-                            );
-                          }
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text(e.toString())));
                         }
                       },
                       decoration: InputDecoration(

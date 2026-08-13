@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:weather_app/config/api_config.dart';
 import 'package:weather_app/models/CurrentWeatherModel.dart';
-import 'package:weather_app/models/HourlyWeatherModel.dart';
-import 'package:weather_app/widgets/hourly_weather_card.dart';
 import 'package:weather_app/models/DailyWeatherModel.dart';
 
 class weatherServie {
@@ -45,7 +43,6 @@ class weatherServie {
     }
     if (response.statusCode == 500) {
       throw Exception('server error. try agaim later');
-      ;
     }
     throw Exception('failed to load weather');
   }
