@@ -4,6 +4,7 @@ import 'package:weather_app/widgets/hourly_weather_card.dart';
 import 'package:weather_app/widgets/day_forecast_card.dart';
 import 'package:weather_app/widgets/featurs_card.dart';
 import 'package:provider/provider.dart';
+import 'package:weather_app/utils/weather_utils.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -14,59 +15,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
-
-  String formatHour(DateTime time) {
-    final hour = time.hour;
-    final period = hour >= 12 ? 'PM' : 'AM';
-    final hour12 = hour % 12 == 0 ? 12 : hour % 12;
-
-    return '$hour12 $period';
-  }
-
-  String getDayName(DateTime date) {
-    final now = DateTime.now();
-
-    if (date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day) {
-      return 'Today';
-    }
-
-    const days = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ];
-
-    return days[date.weekday - 1];
-  }
-
-  ImageProvider getWeatherBackground(String condition) {
-    switch (condition.toLowerCase()) {
-      case 'clear':
-        return const AssetImage('assets/images/sunny.jpg');
-
-      case 'clouds':
-        return const AssetImage('assets/images/cloudy.png');
-
-      case 'rain':
-        return const AssetImage('assets/images/rainy.png');
-
-      case 'snow':
-        return const AssetImage('assets/images/snowy.png');
-
-      case 'thunderstorm':
-        return const AssetImage('assets/images/storm.png');
-
-      default:
-        return const AssetImage('assets/images/sunny.png');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -77,28 +25,74 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = context.watch<weatherProvider>();
+
+    if (provider.weather == null) {
+      return Scaffold(
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/sunny.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: Container(
+                color: const Color.fromARGB(
+                  255,
+                  43,
+                  43,
+                  57,
+                ).withValues(alpha: 0.7),
+              ),
+            ),
+            const Center(child: CircularProgressIndicator(color: Colors.white)),
+          ],
+        ),
+      );
+    }
+    if (provider.weather == null) {
+      return const Scaffold(
+        backgroundColor: Color.fromARGB(255, 62, 62, 105),
+        body: Center(
+          child: Text(
+            'Failed to get weather data',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        ),
+      );
+    }
+    final weather = provider.weather!;
     final features = [
       {
         'icon': Icons.water_drop,
         'title': 'Humidity',
-        'value': '${provider.weather?.humidity}%',
+        'value': '${weather.humidity}%',
       },
       {
         'icon': Icons.air,
         'title': 'Wind',
-        'value': '${provider.weather?.windSpeed} km/h',
+        'value': '${weather.windSpeed} km/h',
       },
       {
         'icon': Icons.speed,
         'title': 'Pressure',
-        'value': '${provider.weather?.pressure} hPa',
+        'value': '${weather.pressure} hPa',
       },
       {
         'icon': Icons.visibility,
         'title': 'Visibility',
-        'value': '${(provider.weather?.visibility ?? 0) / 1000} km',
+        'value': '${(weather.visibility) / 1000} km',
       },
     ];
 
@@ -109,7 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: getWeatherBackground(provider.weather?.condition ?? ''),
-                // 'assets/images/sunny.png'
                 fit: BoxFit.cover,
               ),
             ),
@@ -118,9 +111,9 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Container(
               color: const Color.fromARGB(
                 255,
-                52,
-                52,
-                84,
+                72,
+                72,
+                120,
               ).withValues(alpha: 0.4),
             ),
           ),
@@ -174,18 +167,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 30),
                     Text(
-                      provider.weather?.cityName ?? '',
+                      weather.cityName,
                       style: TextStyle(fontSize: 28, color: Colors.white),
                     ),
                     Text(
-                      '${provider.weather?.temperature.round()}°',
+                      '${weather.temperature.round()}°',
                       style: TextStyle(fontSize: 35),
                     ),
-                    Text(
-                      provider.weather?.condition ?? '',
-                      style: TextStyle(fontSize: 20),
-                    ),
+                    Text(weather.condition, style: TextStyle(fontSize: 20)),
                     SizedBox(height: 10),
 
                     Container(
@@ -194,10 +185,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderRadius: BorderRadius.circular(10),
                         color: const Color.fromARGB(
                           255,
-                          55,
-                          114,
-                          216,
-                        ).withValues(alpha: 0.4),
+                          109,
+                          136,
+                          185,
+                        ).withValues(alpha: 0.5),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -251,15 +242,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     SizedBox(height: 10),
                     Container(
-                      height: 600,
+                      height: 400,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: const Color.fromARGB(
                           255,
-                          55,
-                          114,
-                          216,
-                        ).withValues(alpha: 0.4),
+                          105,
+                          131,
+                          179,
+                        ).withValues(alpha: 0.5),
                       ),
                       child: Padding(
                         // padding: const EdgeInsets.all(8.0),
@@ -341,6 +332,15 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
+          if (provider.isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withValues(alpha: 0.4),
+                child: const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              ),
+            ),
         ],
       ),
     );

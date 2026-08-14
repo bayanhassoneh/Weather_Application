@@ -19,8 +19,11 @@ A clean, modern Flutter weather application built to demonstrate real-world REST
 <p align="left">
   <img src="screenshots/splashScreen.png" width="30%" alt="Splash Screen"/>
   &nbsp;&nbsp;
-  <img src="screenshots/home.png" width="30%" alt="Home Screen"/>
+ <img src="screenshots/home.png" width="30%" alt="Home Screen"/>
+  &nbsp;&nbsp;
+   <img src="assets/cloudyHome.png" width="30%" alt="cloudy home">
 </p>
+
 
 ##  Key Concepts Applied
 

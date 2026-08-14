@@ -23,12 +23,12 @@ class CurrentWeathermodel {
     return CurrentWeathermodel(
       cityName: json['name'],
       temperature: json['main']['temp'].toDouble(),
-      condition: json['waether'][0]['main'],
+      condition: json['weather']?[0]?['main'],
       icon: json['weather'][0]['icon'],
       humidity: json['main']['humidity'],
       pressure: json['main']['pressure'],
       windSpeed: json['wind']['speed'].toDouble(),
-      visibility: json['wind']['visibility'],
+      visibility: (json['visibility'] as num?)?.toDouble() ?? 0.0,
     );
   }
 }

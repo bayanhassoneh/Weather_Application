@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/utils/weather_utils.dart';
 
 class DayForecastCard extends StatelessWidget {
   final String day;
@@ -16,6 +17,7 @@ class DayForecastCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.all(7),
       child: Column(
         children: [
           Row(
@@ -31,12 +33,13 @@ class DayForecastCard extends StatelessWidget {
                 ),
               ),
               // SizedBox(width: 10),
-              Image.network(
-                'https://openweathermap.org/img/wn/$icon@2x.png',
-                width: 40,
-                height: 40,
-              ),
-              // Text(icon, style: TextStyle(fontSize: 15)),
+              getWeatherIcon(icon, size: 25),
+              // Image.network(
+              //   'https://openweathermap.org/img/wn/$icon@2x.png',
+              //   width: 40,
+              //   height: 40,
+              // ),
+              // Text(icon, style: TextStyle(fontS ize: 15)),
               //  SizedBox(width: 10),
               Expanded(
                 child: Align(
@@ -49,7 +52,7 @@ class DayForecastCard extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(color: Colors.white, thickness: 0.2),
+          const Divider(color: Colors.white, thickness: 0.3),
         ],
       ),
     );

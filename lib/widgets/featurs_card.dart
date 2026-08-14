@@ -16,7 +16,7 @@ class FeatursCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: const Color.fromARGB(255, 55, 114, 216).withValues(alpha: 0.4),
+        color: const Color.fromARGB(255, 105, 131, 179).withValues(alpha: 0.5),
       ),
       child: Padding(
         padding: const EdgeInsets.all(15),

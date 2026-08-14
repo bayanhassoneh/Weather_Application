@@ -49,12 +49,14 @@ class weatherServie {
 
   Future<List<dynamic>> getForcastByLOcation(double lat, double lon) async {
     final url = Uri.parse(
-      '$baseURL?lat=$lat&lon=$lon&appid=${ApiConfig.weatherApiKey}&units=metric',
+      '$forcastURL?lat=$lat&lon=$lon&appid=${ApiConfig.weatherApiKey}&units=metric',
     );
     final response = await http.get(url);
+    print('STATUS CODE: ${response.statusCode}');
+    print('RESPONSE BODY: ${response.body}');
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return data['list'];
+      return data['list'] ?? [];
     }
 
     throw Exception('Failed to load forecast');

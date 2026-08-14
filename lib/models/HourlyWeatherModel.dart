@@ -10,7 +10,10 @@ class HourlyWeatherModel {
   });
   factory HourlyWeatherModel.fromJson(Map<String, dynamic> json) {
     return HourlyWeatherModel(
-      time: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
+      time: DateTime.fromMillisecondsSinceEpoch(
+        json['dt'] * 1000,
+        isUtc: true,
+      ).toLocal(),
       temperature: json['main']['temp'].toDouble(),
       icon: json['weather'][0]['icon'],
     );

@@ -20,11 +20,9 @@ class weatherProvider extends ChangeNotifier {
 
       final data = await _servie.getWeatherDataByCity(city);
       weather = CurrentWeathermodel.fromJson(data);
-
-      final forecastData = await _servie.getForcastByLOcation(
-        data['coord']['lat'],
-        data['coord']['lon'],
-      );
+      final lat = (data['coord']['lat'] as num).toDouble();
+      final lon = (data['coord']['lon'] as num).toDouble();
+      final forecastData = await _servie.getForcastByLOcation(lat, lon);
       hourlyWeather = forecastData
           .map((item) => HourlyWeatherModel.fromJson(item))
           .toList();
