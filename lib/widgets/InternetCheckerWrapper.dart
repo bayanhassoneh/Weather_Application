@@ -20,7 +20,7 @@ class _Internetcheckerstate extends State<Internetcheckerwrapper> {
         final connectivityResult = snapshot.data;
 
         if (connectivityResult != null) {
-          if (connectivityResult.contains(ConnectivityResult.none)) {
+          if (connectivityResult.contains(ConnectivityResult.none)) {  //none = no connection
             if (_debounceTimer == null || !_debounceTimer!.isActive) {
               _debounceTimer = Timer(const Duration(seconds: 3), () {
                 setState(() {
@@ -31,7 +31,7 @@ class _Internetcheckerstate extends State<Internetcheckerwrapper> {
           } else {
             _debounceTimer?.cancel();
             if (isOffline) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {// emplement callbacke after finesh the current frame ,so it may cause error
                 setState(() {
                   isOffline = false;
                 });

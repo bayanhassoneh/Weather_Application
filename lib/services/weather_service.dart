@@ -23,7 +23,7 @@ class weatherServie {
     }
   }
 
-  Future<CurrentWeathermodel> getWeatherByLocation(
+  Future<Map<String,dynamic>> getWeatherByLocation(
     double lat,
     double lon,
   ) async {
@@ -33,7 +33,7 @@ class weatherServie {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return CurrentWeathermodel.fromJson(data);
+      return data;
     }
     if (response.statusCode == 400) {
       throw Exception('city not found');
@@ -57,6 +57,7 @@ class weatherServie {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return data['list'] ?? [];
+      //مفتاح اسمه ليست جواته الفوركاست او مجموعة درجات الحراره
     }
 
     throw Exception('Failed to load forecast');
@@ -66,15 +67,25 @@ class weatherServie {
     final Map<String, List<dynamic>> groupedDays = {};
     for (final item in forcastData) {
       final data = item['dt_txt'].toString().split(' ')[0];
+      //item['dt_txt']: بتجيب التاريخ والوقت من العنصر الحالي
+      //.split(' ')[0]: بتقسم عند الفراغ ' ' و بتختار القسم الاول [0]
       groupedDays.putIfAbsent(data, () => []);
+      //يعني اذا مش موجود بالماب ضيفه و اعطيه قيمته الفاضيه
       groupedDays[data]!.add(item);
+      //ضيف عالتاريخ هاد الايتم او التوقع
     }
     return groupedDays.entries.map((entry) {
-      final forcast = entry.value;
+      //groupedDays.entries: بتعطينا كل زوج من الـماب يعني المفتاح والقيمة مع بعض
+      final forcast = entry.value; //توقعات هالتاريخ
+      //     forcast = [
+      //   {'main': {'temp': 20}},
+      //   {'main': {'temp': 25}},
+      //   {'main': {'temp': 18}},
+      // ];شكلها بكون هيك
       final tempretures = forcast
           .map<double>((item) => (item['main']['temp'] as num).toDouble())
           .toList();
-
+      //ليست الدرجات
       final minTemp = tempretures.reduce((a, b) => a > b ? b : a);
       final maxTemp = tempretures.reduce((a, b) => a > b ? a : b);
       final icon = forcast.first['weather'][0]['icon'];
