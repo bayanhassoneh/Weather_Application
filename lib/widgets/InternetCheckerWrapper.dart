@@ -20,7 +20,8 @@ class _Internetcheckerstate extends State<Internetcheckerwrapper> {
         final connectivityResult = snapshot.data;
 
         if (connectivityResult != null) {
-          if (connectivityResult.contains(ConnectivityResult.none)) {  //none = no connection
+          if (connectivityResult.contains(ConnectivityResult.none)) {
+            //none = no connection
             if (_debounceTimer == null || !_debounceTimer!.isActive) {
               _debounceTimer = Timer(const Duration(seconds: 3), () {
                 setState(() {
@@ -31,7 +32,8 @@ class _Internetcheckerstate extends State<Internetcheckerwrapper> {
           } else {
             _debounceTimer?.cancel();
             if (isOffline) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {// emplement callbacke after finesh the current frame ,so it may cause error
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                // emplement callbacke after finesh the current frame ,so it may cause error
                 setState(() {
                   isOffline = false;
                 });
@@ -40,27 +42,33 @@ class _Internetcheckerstate extends State<Internetcheckerwrapper> {
           }
         }
         if (isOffline) {
-          return Scaffold(
-            body: Center(
-              child: Column(
-                children: [
-                  Icon(Icons.signal_wifi_off, size: 80, color: Colors.grey),
-                  SizedBox(height: 20),
-                  Text(
-                    'No Internet Connection',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
+          return Stack(
+            children: [
+              widget.child,
+              Positioned(
+                top: 2,
+                left: 2,
+                right: 2,
+                child: Material(
+                  color: const Color.fromARGB(186, 108, 107, 107),
+                  borderRadius: BorderRadius.circular(10),
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline, size: 15),
+                        SizedBox(width: 10),
+                        Text(
+                          'no internet connection.',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    'Please check your network settings.',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           );
         }
         return widget.child;

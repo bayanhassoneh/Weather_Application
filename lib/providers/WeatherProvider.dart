@@ -36,32 +36,22 @@ class weatherProvider extends ChangeNotifier {
       //   print(hourly.time);
       // }
       // //>>
-      final dailyData = _servie.getDailyForecast(forecastData); //**********
-      final weatherData = {
-        'current': data,
-        'forcast': forecastData,
-        'lastUpdate': DateTime.now().toIso8601String(),
-      };
-      await localStorage.saveWeatherData(
-        weatherData,
-      ); //مبدئيا مكانها قبل تحديث القيم الجديده عشان اذا التخزين رمى اكسبشن من يعرض قيم صحيحه ثم يعدلها لقيم قديمه بسبب هالايرور
+      final dailyData = _servie.getDailyForecast(forecastData); //*********** */
       weather = currentWeather;
       hourlyWeather = hourlyData;
       dailyWeather = dailyData;
-
-      //final jsonString = jsonEncode();
-    } catch (e) {
-      final cachedData = await localStorage.readWeatherData();
-      if (cachedData != null) {
-        weather = CurrentWeathermodel.fromJson(cachedData['current']);
-        final forcast = cachedData['forcast'];
-        hourlyWeather = forcast
-            .map((item) => HourlyWeatherModel.fromJson(item))
-            .toList();
-        dailyWeather = _servie.getDailyForecast(forcast);
-      } else {
-        print('an error acured: $e');
+      try {
+        final weatherData = {
+          'current': data,
+          'forecast': forecastData,
+          'lastUpdate': DateTime.now().toIso8601String(),
+        };
+        await localStorage.saveWeatherData(weatherData);
+      } on Exception catch (e) {
+        print(e);
       }
+    } catch (e) {
+      await getLocalData();
     } finally {
       isLoading = false;
       notifyListeners();
@@ -89,31 +79,43 @@ class weatherProvider extends ChangeNotifier {
       final dailyData = _servie.getDailyForecast(
         forecastData,
       ); //************* */
-
-      final weatherData = {
-        'current': weather,
-        'forcast': forecastData,
-        'lastUpdate': DateTime.now().toIso8601String(),
-      };
-      await localStorage.saveWeatherData(weatherData);
       weather = currentWeather;
       hourlyWeather = hourlyData;
       dailyWeather = dailyData;
-    } catch (e) {
-      final cachedData = await localStorage.readWeatherData();
-      if (cachedData != null) {
-        weather = CurrentWeathermodel.fromJson(cachedData['current']);
-        final forcast = cachedData['forcast'];
-        hourlyWeather = forcast
-            .map((item) => HourlyWeatherModel.fromJson(item))
-            .toList();
-        dailyWeather = _servie.getDailyForecast(forcast);
-      } else {
-        print('an error acured: $e');
+
+      try {
+        final weatherData = {
+          'current': currentData,
+          'forecast': forecastData,
+          'lastUpdate': DateTime.now().toIso8601String(),
+        };
+        await localStorage.saveWeatherData(weatherData);
+      } on Exception catch (e) {
+        print(e);
       }
+    } catch (e) {
+      await getLocalData();
     } finally {
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> getLocalData() async {
+    try {
+      final cachedData = await localStorage.readWeatherData();
+      if (cachedData != null) {
+        weather = CurrentWeathermodel.fromJson(cachedData['current']);
+        final forecast = cachedData['forecast'];
+        hourlyWeather = forecast
+            .map((item) => HourlyWeatherModel.fromJson(item))
+            .toList();
+        dailyWeather = _servie.getDailyForecast(forecast);
+      } else {
+        print('an error acured.');
+      }
+    } on Exception catch (e) {
+      print(e);
     }
   }
 }
