@@ -16,6 +16,7 @@ class weatherProvider extends ChangeNotifier {
   bool isLoading = false;
   List<HourlyWeatherModel> hourlyWeather = [];
   List<DailyWeatherModel> dailyWeather = [];
+  String? errorMessage;
 
   Future<void> gethWeatherByCity(String city) async {
     try {
@@ -27,6 +28,9 @@ class weatherProvider extends ChangeNotifier {
       final lat = (data['coord']['lat'] as num).toDouble();
       final lon = (data['coord']['lon'] as num).toDouble();
       final forecastData = await _servie.getForcastByLOcation(lat, lon);
+      if (forecastData.isEmpty) {
+        throw Exception('Forecast data is empty');
+      }
       final currentWeather = CurrentWeathermodel.fromJson(data); //******
       final hourlyData = forecastData
           .map((item) => HourlyWeatherModel.fromJson(item))
@@ -37,6 +41,9 @@ class weatherProvider extends ChangeNotifier {
       // }
       // //>>
       final dailyData = _servie.getDailyForecast(forecastData); //*********** */
+      if (hourlyData.isEmpty || dailyData.isEmpty) {
+        throw Exception('Forecast data is incomplete');
+      }
       weather = currentWeather;
       hourlyWeather = hourlyData;
       dailyWeather = dailyData;
@@ -51,7 +58,10 @@ class weatherProvider extends ChangeNotifier {
         print(e);
       }
     } catch (e) {
-      await getLocalData();
+      final hasCache = await getLocalData();
+      if (!hasCache) {
+        errorMessage = 'Unable to load weather data.';
+      }
     } finally {
       isLoading = false;
       notifyListeners();
@@ -94,14 +104,17 @@ class weatherProvider extends ChangeNotifier {
         print(e);
       }
     } catch (e) {
-      await getLocalData();
+      final hasCache = await getLocalData();
+      if (!hasCache) {
+        errorMessage = 'unable to load weather data';
+      }
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> getLocalData() async {
+  Future<bool> getLocalData() async {
     try {
       final cachedData = await localStorage.readWeatherData();
       if (cachedData != null) {
@@ -114,8 +127,10 @@ class weatherProvider extends ChangeNotifier {
       } else {
         print('an error acured.');
       }
-    } on Exception catch (e) {
-      print(e);
+      return true;
+    } catch (e) {
+      print('Cache retrieval failed: $e');
+      return false;
     }
   }
 }

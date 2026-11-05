@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final provider = context.watch<weatherProvider>();
 
-    if (provider.weather == null) {
+    if (provider.isLoading) {
       return Scaffold(
         body: Stack(
           children: [
